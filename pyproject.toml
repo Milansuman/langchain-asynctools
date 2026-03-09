@@ -7,7 +7,10 @@ authors = [
     { name = "Milansuman", email = "milansuman2016@gmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "langchain>=1.2.10",
+    "pytest>=9.0.2",
+]
 
 [build-system]
 requires = ["uv_build>=0.9.25,<0.10.0"]
@@ -15,5 +18,8 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
+    "langchain-litellm>=0.6.1",
     "pytest>=9.0.2",
+    "pytest-asyncio>=1.3.0",
+    "python-dotenv>=1.2.2",
 ]

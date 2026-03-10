@@ -42,6 +42,12 @@ async def test_sync_and_async_tool_calls():
         AIMessage(content="", tool_calls=[
             ToolCall(name="slow_computation", args={"n": 5}, id="call_async_1"),
         ]),
+        AIMessage(content="", tool_calls=[
+            ToolCall(name="query_tool_output", args={"job_id": "1"}, id="call_query_1"),
+        ]),
+        AIMessage(content="", tool_calls=[
+            ToolCall(name="await_tool_output", args={"job_id": "1", "wait_time": 2}, id="call_await_1"),
+        ]),
         AIMessage(content="All done."),
     ]))
 
@@ -63,5 +69,9 @@ async def test_sync_and_async_tool_calls():
     async_result = next(m for m in tool_messages if m.tool_call_id == "call_async_1")
     assert "job ID" in async_result.content
 
-    # The background task should be tracked in the middleware
-    assert len(middleware._jobs) == 1
+    async_query_result = next(m for m in tool_messages if m.tool_call_id == "call_query_1")
+    assert "still processing" in async_query_result.content
+
+    async_await_query_result = next(m for m in tool_messages if m.tool_call_id == "call_await_1")
+    assert "25" in async_await_query_result.content
+    assert len(result.get("jobs", {})) == 0  # Job should be cleaned up after completion  

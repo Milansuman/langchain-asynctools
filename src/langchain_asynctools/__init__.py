@@ -147,7 +147,8 @@ class AsyncTools(AgentMiddleware[AsyncToolsState]):
             state["jobs"] = jobs
 
         next_job_id = state.get("next_job_id", 1)
-        job_id = str(next_job_id)
+        tool_name = request.tool_call["name"]
+        job_id = f"{tool_name}-{next_job_id}"
         state["next_job_id"] = next_job_id + 1
 
         jobs[job_id] = asyncio.ensure_future(handler(request))
